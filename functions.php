@@ -176,3 +176,65 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
 
+
+add_action('wp_dashboard_setup', 'dashboard_weather_widget');
+
+function dashboard_weather_widget() {
+
+	if ( current_user_can('manage_options')) {
+		wp_add_dashboard_widget('weather_widget', 'Weather for Brookvale, NSW','weather_widget_func');
+	}
+}
+
+function weather_widget_func($atts) {
+	
+	$defaults =[
+		'title' => 'Table title'	
+	];
+
+	$atts = [
+		$defaults,
+		$atts,
+		''
+	];
+	
+		$url = 'https://api.openweathermap.org/data/2.5/weather?lat=33.7667&lon=151.2667&appid=23ea4f8c6144e1caa427bdd3b0737c21';
+
+	   $arguments = array(
+        'method' => 'GET'
+    );
+
+	$response = wp_remote_get( $url, $arguments );
+
+	if ( is_wp_error( $response ) ) {
+		$error_message = $response->get_error_message();
+		return "Something went wrong: $error_message";
+	} 
+
+	$results = json_decode (wp_remote_retrieve_body( $response) );
+
+	/* var_dump($results); */
+
+/* 	echo '<pre>'; 
+	print_r($results);
+	echo '</pre>'; */
+	
+
+ 	$html = '';
+	echo "<br>";
+	echo "Clouds: ".$results->weather[0]->description.'<br>';
+	echo "Temprature: ".$results->main->temp.'°c<br>';
+	echo "Feels like: ".$results->main->feels_like.'°c<br>';
+	echo "Minimum Temprature: ".$results->main->temp_min.'°c<br>';
+	echo "Maximum Temprature: ".$results->main->temp_max.'°c<br>';
+	echo "Pressure: ".$results->main->pressure.'<br>';
+	echo "Humidity: ".$results->main->humidity.'<br>';
+	echo "Sea Level: ".$results->main->sea_level.'<br>';
+	echo "Ground Level: ".$results->main->grnd_level.'<br>';
+	echo "Visibility: ".$results->visibility.'<br>';
+	echo "Wind Speed: ".$results->wind->speed.'<br>';
+	echo "Wind Direction/Degrees: ".$results->wind->deg.'<br>';
+	echo "Wind Gust: ".$results->wind->gust.'<br>';
+	echo $html; 
+
+}
