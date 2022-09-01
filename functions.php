@@ -186,17 +186,7 @@ function dashboard_weather_widget() {
 	}
 }
 
-function weather_widget_func($atts) {
-	
-	$defaults =[
-		'title' => 'Table title'	
-	];
-
-	$atts = [
-		$defaults,
-		$atts,
-		''
-	];
+function weather_widget_func() {
 	
 		$url = 'https://api.openweathermap.org/data/2.5/weather?lat=33.7667&lon=151.2667&appid=23ea4f8c6144e1caa427bdd3b0737c21';
 
